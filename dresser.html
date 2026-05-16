@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>穿搭模拟器 · 心动雷达</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <h1>♡ 心动雷达</h1>
+        <span class="tag">/ 穿搭模拟器</span>
+      </div>
+      <div class="header-right">
+        <button class="header-action" id="theme-btn">☀ 浅色</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <a href="index.html" class="back-link">← 返回首页</a>
+
+    <div class="dresser-layout">
+      <!-- 左:控制面板(对 2D / 3D 共享) -->
+      <div class="controls-col">
+        <div class="card">
+          <h2>👤 外貌特征</h2>
+          <div class="control-group">
+            <label>性别</label>
+            <div class="option-row" id="ctl-gender"></div>
+          </div>
+          <div class="control-group">
+            <label>脸型</label>
+            <div class="option-row" id="ctl-face"></div>
+          </div>
+          <div class="control-group">
+            <label>肤色</label>
+            <div class="swatch-row" id="ctl-skin"></div>
+          </div>
+          <div class="control-group">
+            <label>身高 <span id="height-val" style="color:var(--accent)">170 cm</span></label>
+            <div class="slider-with-value">
+              <input type="range" id="ctl-height" min="150" max="195" step="1" value="170">
+            </div>
+          </div>
+          <div class="control-group">
+            <label>体型</label>
+            <div class="option-row" id="ctl-body"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>💇 发型</h2>
+          <div class="item-row" id="ctl-hair"></div>
+          <div class="control-group" style="margin-top:10px">
+            <label>发色</label>
+            <div class="swatch-row" id="ctl-hair-color"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>👕 上衣</h2>
+          <div class="item-row" id="ctl-top"></div>
+          <div class="control-group" style="margin-top:10px">
+            <label>颜色</label>
+            <div class="swatch-row" id="ctl-top-color"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>👖 下装</h2>
+          <div class="item-row" id="ctl-bottom"></div>
+          <div class="control-group" style="margin-top:10px">
+            <label>颜色</label>
+            <div class="swatch-row" id="ctl-bottom-color"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>💍 配饰</h2>
+          <div class="item-row" id="ctl-acc"></div>
+          <div class="control-group" style="margin-top:10px">
+            <label>颜色</label>
+            <div class="swatch-row" id="ctl-acc-color"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右:预览(三种视图切换) -->
+      <div class="preview-col">
+        <div class="tab-row">
+          <button class="tab-btn active" data-tab="2d">2D 简图</button>
+          <button class="tab-btn" data-tab="3d">3D 模型</button>
+          <button class="tab-btn" data-tab="ai">AI 真实试衣 ✨</button>
+        </div>
+
+        <!-- 2D Tab -->
+        <div class="tab-pane active" id="pane-2d">
+          <div class="canvas-wrap">
+            <div id="preview-area" style="width:300px;height:500px"></div>
+            <div class="canvas-actions">
+              <button class="btn" id="export-btn">📥 导出 PNG</button>
+              <button class="btn secondary" id="random-btn">🎲 随机搭配</button>
+            </div>
+            <canvas id="hidden-canvas" width="300" height="500" style="display:none"></canvas>
+          </div>
+        </div>
+
+        <!-- 3D Tab -->
+        <div class="tab-pane" id="pane-3d">
+          <div class="canvas-wrap">
+            <div id="canvas-3d" style="width:300px;height:500px"></div>
+            <div class="pose-bar">
+              <span class="pose-label">姿态</span>
+              <div class="option-row" id="pose-row">
+                <button class="option-pill sel" data-pose="idle">站立</button>
+                <button class="option-pill" data-pose="wave">挥手</button>
+                <button class="option-pill" data-pose="hips">叉腰</button>
+                <button class="option-pill" data-pose="walk">走路</button>
+              </div>
+            </div>
+            <div class="pose-bar">
+              <span class="pose-label">表情</span>
+              <div class="option-row" id="expr-row">
+                <button class="option-pill sel" data-expr="neutral">平静</button>
+                <button class="option-pill" data-expr="smile">微笑</button>
+                <button class="option-pill" data-expr="laugh">大笑</button>
+                <button class="option-pill" data-expr="shy">害羞</button>
+              </div>
+            </div>
+            <div class="canvas-actions">
+              <button class="btn" id="export-3d-btn">📥 导出 PNG</button>
+              <button class="btn secondary" id="reset-rot-btn">🔄 复位角度</button>
+              <button class="btn secondary" id="random-3d-btn">🎲 随机搭配</button>
+            </div>
+            <p class="hint-3d">🖱 鼠标拖拽旋转 · 自动呼吸/眨眼 · 闲置时自动旋转</p>
+          </div>
+        </div>
+
+        <!-- AI Tab -->
+        <div class="tab-pane" id="pane-ai">
+          <div class="card">
+            <div class="coming-soon">
+              <div class="emoji">🤖</div>
+              <h3>AI 真实试衣 · Coming Soon</h3>
+              <p>
+                后续接入 Replicate 上的 IDM-VTON / OOTDiffusion 模型,<br>
+                支持上传真人全身照 + 自选上衣 → AI 合成真实上身效果。<br><br>
+                上传前会先用 nsfwjs 在本地做露骨内容预检,<br>
+                只在通过过滤后才上传到服务端。<br><br>
+                需要 API key + 网络环境。当前 MVP 阶段先把交互流程跑通。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      所有图像本地实时生成,不上传任何照片或数据。导出的 PNG 仅保存在你的下载目录。
+    </p>
+  </main>
+
+  <script src="js/common.js"></script>
+  <script src="js/lib/three.min.js"></script>
+  <script src="js/dresser-assets.js"></script>
+  <script src="js/dresser-3d.js"></script>
+  <script src="js/dresser.js"></script>
+</body>
+</html>
